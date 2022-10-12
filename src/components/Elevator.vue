@@ -14,15 +14,7 @@
 <script>
 export default {
   name: "Elevator",
-  props: ["floors", "callQueue", "idleElevators"],
-  data() {
-    return {
-      floor: 1,
-      isIdle: true,
-      direction: "still",
-      targetFloor: null,
-    };
-  },
+  props: ["floors", "floor", "direction", "isIdle", "targetFloor"],
   computed: {
     displayingDirection() {
       if (this.direction === "still") {
@@ -33,40 +25,6 @@ export default {
         return "↓";
       }
     },
-  },
-  methods: {
-    async goToFloor(targetFloor) {
-      if (targetFloor) {
-        this.targetFloor = targetFloor
-      }
-      if (this.isIdle) {
-        this.$emit("started", this.$.vnode.key, [this.floor, this.targetFloor]);
-      }
-      this.isIdle = false;
-      if (this.floor === targetFloor) {
-        await new Promise((r) => setTimeout(r, 3000));
-        this.isIdle = true;
-        this.direction = "still";
-        this.$emit("arrived", this.$.vnode.key, this.targetFloor);
-        this.targetFloor = null;
-        return null;
-      } else {
-        if (this.floor > targetFloor) {
-          this.direction = "down";
-          this.floor = this.floor - 1;
-          await new Promise((r) => setTimeout(r, 1000));
-          this.goToFloor(targetFloor);
-        } else {
-          this.direction = "up";
-          this.floor = this.floor + 1;
-          await new Promise((r) => setTimeout(r, 1000));
-          this.goToFloor(targetFloor);
-        }
-      }
-    },
-  },
-  mounted() {
-    this.$emit("arrived", this.$.vnode.key, this.floor);
   },
 };
 </script>
